@@ -5,6 +5,7 @@
         android:id="@+id/search"
         android:title="@string/action_search"
         android:icon="@drawable/icon_search"
+        android:background="@drawable/search_view_bg"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView" />
     <item
@@ -16,4 +17,8 @@
         android:id="@+id/chat"
         app:showAsAction="never"
         android:title="Chat"/>
+    <item
+        android:id="@+id/logout"
+        app:showAsAction="never"
+        android:title="LogOut"/>
 </menu>

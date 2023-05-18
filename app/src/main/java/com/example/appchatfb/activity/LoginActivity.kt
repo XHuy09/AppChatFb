@@ -2,14 +2,16 @@ package com.example.appchatfb.activity
 
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.appchatfb.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_login.*
+import live.videosdk.rtc.android.VideoSDK
 
 class LoginActivity : AppCompatActivity() {
     private var auth: FirebaseAuth? = null
@@ -17,6 +19,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        VideoSDK.initialize(applicationContext)
 
         auth = FirebaseAuth.getInstance()
         //firebaseUser = auth!!.currentUser!!
@@ -29,6 +33,14 @@ class LoginActivity : AppCompatActivity() {
             )
             startActivity(intent)
             finish()
+        }
+
+        checkbox.setOnClickListener{
+            if (checkbox.isChecked){
+                etPassword.inputType = 1
+            }else{
+                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
         }
 
         btnLogin.setOnClickListener {

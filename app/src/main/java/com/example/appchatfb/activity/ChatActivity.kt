@@ -2,12 +2,23 @@
 
 package com.example.appchatfb.activity
 
+
+
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.bumptech.glide.Glide
 import com.example.appchatfb.R
 import com.example.appchatfb.RetrofitInstance
@@ -24,12 +35,17 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 
 class ChatActivity : AppCompatActivity() {
+
+    private var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiIzMjMzN2M2Zi1jMjEzLTRlZTMtOGVkNC03NTgzOTcwMTNhODQiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY4NDQwMjYyNiwiZXhwIjoxNjg1MDA3NDI2fQ.1Sy5QPXJ5T1wjCKP-3N6DdO9ktyxPsn_zO3BZXf0K3Q"
     var firebaseUser: FirebaseUser? = null
     var reference: DatabaseReference? = null
     var chatList = ArrayList<Chat>()
     var topic = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -40,6 +56,19 @@ class ChatActivity : AppCompatActivity() {
         var intent = getIntent()
         var userId = intent.getStringExtra("userId")
         var userName = intent.getStringExtra("userName")
+        val btnJoin = findViewById<ImageButton>(R.id.btn_vc)
+        checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID)
+        checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID)
+
+
+        btnJoin.setOnClickListener {
+
+            createMeeting(sampleToken)
+            val intent = Intent(this@ChatActivity, MettingActivity::class.java)
+            intent.putExtra("token", sampleToken)
+            intent.putExtra("meetingId", firebaseUser?.uid)
+            startActivity(intent)
+        }
 
 
         imgBack.setOnClickListener {
@@ -143,4 +172,50 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun createMeeting(token: String) {
+        AndroidNetworking.post("https://api.videosdk.live/v2/rooms")
+            .addHeaders("Authorization", token) //we will pass the token in the Headers
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject) {
+                    try {
+                        // response will contain `roomId`
+                        val meetingId = firebaseUser?.uid
+
+                        // starting the MeetingActivity with received roomId and our sampleToken
+                        val intent = Intent(this@ChatActivity, MettingActivity::class.java)
+                        intent.putExtra("token", sampleToken)
+                        intent.putExtra("meetingId", meetingId)
+                        startActivity(intent)
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onError(anError: ANError) {
+                    anError.printStackTrace()
+                    Toast.makeText(
+                        this@ChatActivity, anError.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+    companion object {
+        private const val PERMISSION_REQ_ID = 22
+        private val REQUESTED_PERMISSIONS = arrayOf(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA
+        )
+    }
+    private fun checkSelfPermission(permission: String, requestCode: Int): Boolean {
+        if (ContextCompat.checkSelfPermission(this, permission) !=
+            PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, requestCode)
+            return false
+        }
+        return true
+    }
 }

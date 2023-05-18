@@ -8,18 +8,39 @@
     android:padding="20dp"
     tools:context=".activity.ChatGPTActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/gilroy_bold"
+        android:text="Chat GPT"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/etQuestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Type your question here"
         android:textSize="20sp"
+        android:fontFamily="@font/gilroy_light"
+        android:layout_weight="0"
+        android:inputType="text"
+        android:background="@color/colorTextBackground"
+        android:padding="12dp"
+        android:textColor="@color/colorText"
         />
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"
+        android:background="@drawable/button_background"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         />
@@ -27,8 +48,9 @@
         android:id="@+id/txtResponse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:hint="Your response will appear here!"
-        android:textSize="20sp"
+        android:textSize="22sp"
         />
 
 </LinearLayout>

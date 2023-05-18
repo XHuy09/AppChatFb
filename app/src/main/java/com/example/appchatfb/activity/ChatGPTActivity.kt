@@ -60,6 +60,10 @@ class ChatGPTActivity : AppCompatActivity() {
                 val intent = Intent(this@ChatGPTActivity, UsersActivity::class.java)
                 startActivity(intent)
             }
+            R.id.logout->{
+                val intent = Intent(this@ChatGPTActivity, LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
         return (super.onOptionsItemSelected(item))
     }

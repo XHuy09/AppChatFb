@@ -96,6 +96,10 @@ class UsersActivity : AppCompatActivity() {
                 })
 
             }
+            R.id.logout ->{
+                val intent = Intent(this@UsersActivity, LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
         return (super.onOptionsItemSelected(item))
     }
